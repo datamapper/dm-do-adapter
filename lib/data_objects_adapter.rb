@@ -207,6 +207,9 @@ module DataMapper
             query = @options.except(:adapter, :user, :password, :host, :port, :path, :fragment, :scheme, :query, :username, :database)
             query = nil if query.empty?
 
+            # Better error message in case port is no Numeric value
+            @options[:port] = @options[:port].to_int if @options[:port]
+
             DataObjects::URI.new(
               @options[:adapter],
               @options[:user] || @options[:username],
@@ -262,7 +265,7 @@ module DataMapper
 
       # @api private
       def select_fields(reader, fields)
-        fields = fields.map { |field| Extlib::Inflection.underscore(field).to_sym }
+        fields = fields.map { |field| ActiveSupport::Inflector.underscore(field).to_sym }
         struct = Struct.new(*fields)
 
         results = []
