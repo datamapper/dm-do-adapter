@@ -1,7 +1,9 @@
 require 'data_objects'
+require 'dm-core'
 
 module DataMapper
   module Adapters
+
     # DataObjectsAdapter is the base class for all adapers for relational
     # databases. If you want to add support for a new RDBMS, it makes
     # sense to make your adapter class inherit from this class.
@@ -732,11 +734,13 @@ module DataMapper
         def quote_name(name)
           "\"#{name[0, self.class::IDENTIFIER_MAX_LENGTH].gsub('"', '""')}\""
         end
-      end #module SQL
+
+      end
 
       include SQL
-    end # class DataObjectsAdapter
+
+    end
 
     const_added(:DataObjectsAdapter)
-  end # module Adapters
-end # module DataMapper
+  end
+end
