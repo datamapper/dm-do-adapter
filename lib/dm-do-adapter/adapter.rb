@@ -17,16 +17,6 @@ module DataMapper
 
       deprecate :query, :select
 
-      # It is assumed that a DO adapter supports transactions
-      #
-      # If this is not the case for a given adapter, this method
-      # should be overwritten to return false
-      #
-      # @api semipublic
-      def self.supports_transactions?
-        true
-      end
-
       # Retrieve results using an SQL SELECT statement
       #
       # @param [String] statement
