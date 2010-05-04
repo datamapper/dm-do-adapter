@@ -259,7 +259,7 @@ module DataMapper
       def with_connection
         yield connection = open_connection
       rescue Exception => exception
-        DataMapper.logger.error(exception.to_s)
+        DataMapper.logger.error(exception.to_s) if DataMapper.logger
         raise
       ensure
         close_connection(connection)
