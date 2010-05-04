@@ -632,9 +632,9 @@ module DataMapper
 
           operation.each do |operand|
             statement, values = conditions_statement(operand, qualify)
-            next unless statement && values
+            next unless statement
             statements << statement
-            bind_values.concat(values)
+            bind_values.concat(values) if values
           end
 
           statement = statements.join(" #{operation.slug.to_s.upcase} ")

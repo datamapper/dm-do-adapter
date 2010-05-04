@@ -199,6 +199,7 @@ share_examples_for 'A DataObjects Adapter' do
         include DataMapper::Resource
 
         property :name, String, :key => true
+        property :description, String, :required => false
 
         belongs_to :parent, self, :required => false
         has n, :children, self, :inverse => :parent
@@ -211,9 +212,10 @@ share_examples_for 'A DataObjects Adapter' do
 
     describe 'with a raw query' do
       before :all do
-        @article_model.create(:name => 'Test').should be_saved
+        @article_model.create(:name => 'Test', :description => 'Description').should be_saved
+        @article_model.create(:name => 'NoDescription').should be_saved
 
-        @query = DataMapper::Query.new(@repository, @article_model, :conditions => [ 'name IS NOT NULL' ])
+        @query = DataMapper::Query.new(@repository, @article_model, :conditions => [ 'description IS NOT NULL' ])
 
         @return = @adapter.read(@query)
       end
@@ -224,7 +226,9 @@ share_examples_for 'A DataObjects Adapter' do
       end
 
       it 'should return expected values' do
-        @return.should == [ { @article_model.properties[:name] => 'Test', @article_model.properties[:parent_name] => nil } ]
+        @return.should == [ { @article_model.properties[:name]        => 'Test',
+                              @article_model.properties[:description] => 'Description',
+                              @article_model.properties[:parent_name] => nil } ]
       end
     end
 
