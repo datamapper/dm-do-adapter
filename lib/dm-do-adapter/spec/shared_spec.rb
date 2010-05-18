@@ -187,7 +187,7 @@ share_examples_for 'A DataObjects Adapter' do
     end
 
     it 'should not have an insert_id' do
-      pending_if 'Inconsistent insert_id results', !(@postgres || @oracle || (@jruby && @mysql)) do
+      pending_if 'Inconsistent insert_id results', !(@postgres || @mysql || @oracle) do
         @result.insert_id.should be_nil
       end
     end
