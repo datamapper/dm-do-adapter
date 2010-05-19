@@ -14,7 +14,7 @@ begin
     gem.homepage    = 'http://github.com/datamapper/dm-do-adapter'
 
     gem.add_dependency 'data_objects',      '~> 0.10.1'
-    gem.add_dependency 'dm-core',           '~> 1.0.0.rc1'
+    gem.add_dependency 'dm-core',           '~> 1.0.0.rc2'
 
     gem.add_development_dependency 'rspec', '~> 1.3'
   end
