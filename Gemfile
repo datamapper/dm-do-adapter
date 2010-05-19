@@ -2,7 +2,7 @@ source 'http://rubygems.org'
 
 DATAMAPPER = 'git://github.com/datamapper'
 DM_VERSION = '~> 1.0.0.rc1'
-DO_VERSION = '~> 0.10.2'
+DO_VERSION = '~> 0.10.3'
 
 group :runtime do # Runtime dependencies (as in the gemspec)
 
