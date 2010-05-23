@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new("> 1.3.1") if s.respond_to? :required_rubygems_version=
   s.authors = ["Dan Kubb"]
-  s.date = %q{2010-05-19}
+  s.date = %q{2010-05-23}
   s.description = %q{DataObjects Adapter for DataMapper}
   s.email = %q{dan.kubb@gmail.com}
   s.extra_rdoc_files = [
@@ -34,6 +34,7 @@ Gem::Specification.new do |s|
   s.homepage = %q{http://github.com/datamapper/dm-do-adapter}
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
+  s.rubyforge_project = %q{datamapper}
   s.rubygems_version = %q{1.3.7}
   s.summary = %q{DataObjects Adapter for DataMapper}
 
