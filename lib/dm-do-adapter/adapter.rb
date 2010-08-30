@@ -474,6 +474,7 @@ module DataMapper
           seen = { target_alias => 0 }
 
           query.links.reverse_each do |relationship|
+            target_alias = relationship.target_model.storage_name(name)
             storage_name = relationship.source_model.storage_name(name)
             source_alias = storage_name
 
@@ -491,8 +492,6 @@ module DataMapper
 
             add_join_conditions(relationship, target_alias, source_alias, statements)
             add_extra_join_conditions(relationship, target_alias, statements, join_bind_values)
-
-            target_alias = source_alias
           end
 
           # prepend the join bind values to the statement bind values

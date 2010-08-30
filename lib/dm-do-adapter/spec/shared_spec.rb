@@ -207,7 +207,28 @@ share_examples_for 'A DataObjects Adapter' do
         auto_migrate!
       end
 
-      @article_model = Article
+      class ::Publisher
+        include DataMapper::Resource
+
+        property :name, String, :key => true
+
+        auto_migrate!
+      end
+
+      class ::Author
+        include DataMapper::Resource
+
+        property :name, String, :key => true
+
+        belongs_to :article
+        belongs_to :publisher
+
+        auto_migrate!
+      end
+
+      @article_model   = Article
+      @publisher_model = Publisher
+      @author_model    = Author
     end
 
     describe 'with a raw query' do
@@ -365,6 +386,26 @@ share_examples_for 'A DataObjects Adapter' do
         end
       end
 
+    end
+
+    describe 'with a Query Path' do
+      subject { @author_model.all(query).to_a }
+
+      let(:article_name)   { 'DataMapper Rocks!'                                                    }
+      let(:publisher_name) { 'Unbiased Press'                                                       }
+      let(:query)          { { 'article.name' => article_name, 'publisher.name' => publisher_name } }
+
+      before do
+        @author = @author_model.first_or_create(
+          :name      => 'Dan Kubb',
+          :article   => { :name => article_name   },
+          :publisher => { :name => publisher_name }
+        )
+      end
+
+      specify { expect { subject }.to_not raise_error }
+
+      it { should == [ @author ] }
     end
   end
 end
