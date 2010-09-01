@@ -2,11 +2,14 @@ source 'http://rubygems.org'
 
 DATAMAPPER = 'git://github.com/datamapper'
 DM_VERSION = '~> 1.0.0'
-DO_VERSION = '~> 0.10.3'
+DO_VERSION = '~> 0.10.2'
 
 group :runtime do # Runtime dependencies (as in the gemspec)
 
-  gem 'data_objects',    DO_VERSION, :git => "#{DATAMAPPER}/do.git"
+  do_options = {}
+  do_options[:git] = "#{DATAMAPPER}/do.git" if ENV['DO_GIT'] == 'true'
+
+  gem 'data_objects',    DO_VERSION, do_options.dup
   gem 'dm-core',         DM_VERSION, :git => "#{DATAMAPPER}/dm-core.git"
 
 end
