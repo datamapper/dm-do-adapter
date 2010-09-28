@@ -109,7 +109,10 @@ module DataMapper
           end
 
           statement = insert_statement(model, properties, serial)
-          result    = execute(statement, *bind_values)
+
+          result = with_connection do |connection|
+            connection.create_command(statement).execute_non_query(*bind_values)
+          end
 
           if result.affected_rows == 1 && serial
             serial.set!(resource, result.insert_id)
@@ -182,7 +185,9 @@ module DataMapper
 
         bind_values.concat(conditions_bind_values)
 
-        execute(statement, *bind_values).affected_rows
+        with_connection do |connection|
+          connection.create_command(statement).execute_non_query(*bind_values)
+        end.affected_rows
       end
 
       # Constructs and executes DELETE statement for given query
@@ -197,7 +202,10 @@ module DataMapper
       def delete(collection)
         query = collection.query
         statement, bind_values = delete_statement(query)
-        execute(statement, *bind_values).affected_rows
+
+        with_connection do |connection|
+          connection.create_command(statement).execute_non_query(*bind_values)
+        end.affected_rows
       end
 
       protected
