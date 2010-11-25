@@ -5,8 +5,8 @@ source 'http://rubygems.org'
 SOURCE       = ENV['SOURCE']   ? ENV['SOURCE'].to_sym              : :git
 REPO_POSTFIX = SOURCE == :path ? ''                                : '.git'
 DATAMAPPER   = SOURCE == :path ? Pathname(__FILE__).dirname.parent : 'http://github.com/datamapper'
-DM_VERSION = '~> 1.0.2'
-DO_VERSION = '~> 0.10.2'
+DM_VERSION   = '~> 1.0.2'
+DO_VERSION   = '~> 0.10.2'
 
 group :runtime do # Runtime dependencies (as in the gemspec)
 
