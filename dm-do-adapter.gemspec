@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Dan Kubb"]
-  s.date = %q{2010-09-07}
+  s.date = %q{2010-11-26}
   s.description = %q{DataObjects Adapter for DataMapper}
   s.email = %q{dan.kubb@gmail.com}
   s.extra_rdoc_files = [
@@ -27,7 +27,6 @@ Gem::Specification.new do |s|
      "lib/dm-do-adapter.rb",
      "lib/dm-do-adapter/adapter.rb",
      "lib/dm-do-adapter/spec/shared_spec.rb",
-     "tasks/local_gemfile.rake",
      "tasks/yard.rake",
      "tasks/yardstick.rake"
   ]
