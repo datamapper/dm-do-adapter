@@ -142,7 +142,12 @@ module DataMapper
           command = connection.create_command(statement)
           command.set_types(types)
 
-          reader = command.execute_reader(*bind_values)
+          # Handle different splat semantics for nil on 1.8 and 1.9
+          reader = if bind_values
+            command.execute_reader(*bind_values)
+          else
+            command.execute_reader
+          end
 
           begin
             while reader.next!
