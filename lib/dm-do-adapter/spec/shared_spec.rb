@@ -99,7 +99,7 @@ share_examples_for 'A DataObjects Adapter' do
         elsif @sql_server
           /^SET IDENTITY_INSERT \"articles\" ON INSERT INTO "articles" \("id"\) VALUES \(.{1,2}\) SET IDENTITY_INSERT \"articles\" OFF $/i
         else
-          /^INSERT INTO "articles" \("id"\) VALUES \(.{1,2}\)$/i
+          /^INSERT INTO "articles" \("id"\) VALUES \(('.{1,2}'|.{1,2})\)$/i
         end
 
         log_output.first.should =~ regexp
