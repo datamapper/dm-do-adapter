@@ -24,4 +24,4 @@ rescue LoadError
   puts 'Jeweler (or a dependency) not available. Install it with: gem install jeweler'
 end
 
-task(:spec) {} # this adapter only provides shared specs that are excercised by real adapters
+task(:spec) {} # this adapter only provides shared specs that are exercised by real adapters
