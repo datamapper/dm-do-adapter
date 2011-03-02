@@ -392,7 +392,7 @@ module DataMapper
           if supports_default_values? && properties.empty?
             statement << default_values_clause
           else
-            statement << <<-SQL.compress_lines
+            statement << DataMapper::Ext::String.compress_lines(<<-SQL)
               (#{properties.map { |property| quote_name(property.field) }.join(', ')})
               VALUES
               (#{(['?'] * properties.size).join(', ')})
