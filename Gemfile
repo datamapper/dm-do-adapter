@@ -8,15 +8,11 @@ DATAMAPPER   = SOURCE == :path ? Pathname(__FILE__).dirname.parent : 'http://git
 DM_VERSION   = '~> 1.1.0.rc1'
 DO_VERSION   = '~> 0.10.2'
 
-group :runtime do
+do_options = {}
+do_options[:git] = "#{DATAMAPPER}/do#{REPO_POSTFIX}" if ENV['DO_GIT'] == 'true'
 
-  do_options = {}
-  do_options[:git] = "#{DATAMAPPER}/do#{REPO_POSTFIX}" if ENV['DO_GIT'] == 'true'
-
-  gem 'data_objects', DO_VERSION, do_options.dup
-  gem 'dm-core',      DM_VERSION, SOURCE => "#{DATAMAPPER}/dm-core#{REPO_POSTFIX}"
-
-end
+gem 'data_objects', DO_VERSION, do_options.dup
+gem 'dm-core',      DM_VERSION, SOURCE => "#{DATAMAPPER}/dm-core#{REPO_POSTFIX}"
 
 group :development do
 
@@ -26,21 +22,12 @@ group :development do
 
 end
 
-group :quality do
+platforms :mri_18 do
+  group :quality do
 
-  gem 'rcov',      '~> 0.9.9', :platforms => :mri_18
-  gem 'yard',      '~> 0.6'
-  gem 'yardstick', '~> 0.2'
+    gem 'rcov',      '~> 0.9.9'
+    gem 'yard',      '~> 0.6'
+    gem 'yardstick', '~> 0.2'
 
-end
-
-group :datamapper do
-
-  if ENV['EXTLIB']
-    gem 'extlib', '~> 0.9.15', SOURCE => "#{DATAMAPPER}/extlib#{REPO_POSTFIX}", :require => nil
-  else
-    gem 'i18n',          '~> 0.5.0'
-    gem 'activesupport', '~> 3.0.3', :require => nil
   end
-
 end
