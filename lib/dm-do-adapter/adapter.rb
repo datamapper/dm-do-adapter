@@ -358,7 +358,7 @@ module DataMapper
           statement = "SELECT #{columns_statement(fields, qualify)}"
           statement << " FROM #{quote_name(query.model.storage_name(name))}"
           statement << " #{join_statement(query, bind_values, qualify)}"   if qualify
-          statement << " WHERE #{conditions_statement}"                    unless conditions_statement.blank?
+          statement << " WHERE #{conditions_statement}"                    unless DataMapper::Ext.blank?(conditions_statement)
           statement << " GROUP BY #{columns_statement(group_by, qualify)}" if group_by && group_by.any?
           statement << " ORDER BY #{order_statement(order_by, qualify)}"   if order_by && order_by.any?
 
@@ -436,7 +436,7 @@ module DataMapper
 
           statement = "UPDATE #{quote_name(model.storage_name(name))}"
           statement << " SET #{properties.map { |property| "#{quote_name(property.field)} = ?" }.join(', ')}"
-          statement << " WHERE #{conditions_statement}" unless conditions_statement.blank?
+          statement << " WHERE #{conditions_statement}" unless DataMapper::Ext.blank?(conditions_statement)
 
           return statement, bind_values
         end
@@ -458,7 +458,7 @@ module DataMapper
           end
 
           statement = "DELETE FROM #{quote_name(model.storage_name(name))}"
-          statement << " WHERE #{conditions_statement}" unless conditions_statement.blank?
+          statement << " WHERE #{conditions_statement}" unless DataMapper::Ext.blank?(conditions_statement)
 
           return statement, bind_values
         end
