@@ -151,7 +151,7 @@ module DataMapper
 
           begin
             while reader.next!
-              records << fields.zip(reader.values).to_hash
+              records << DataMapper::Ext::Array.to_hash(fields.zip(reader.values))
             end
           ensure
             reader.close
@@ -219,7 +219,10 @@ module DataMapper
       def normalized_uri
         @normalized_uri ||=
           begin
-            query = @options.except(:adapter, :user, :password, :host, :port, :path, :fragment, :scheme, :query, :username, :database)
+            keys = [
+              :adapter, :user, :password, :host, :port, :path, :fragment,
+              :scheme, :query, :username, :database ]
+            query = DataMapper::Ext::Hash.except(@options, keys)
             query = nil if query.empty?
 
             # Better error message in case port is no Numeric value
@@ -358,7 +361,7 @@ module DataMapper
           statement = "SELECT #{columns_statement(fields, qualify)}"
           statement << " FROM #{quote_name(query.model.storage_name(name))}"
           statement << " #{join_statement(query, bind_values, qualify)}"   if qualify
-          statement << " WHERE #{conditions_statement}"                    unless conditions_statement.blank?
+          statement << " WHERE #{conditions_statement}"                    unless DataMapper::Ext.blank?(conditions_statement)
           statement << " GROUP BY #{columns_statement(group_by, qualify)}" if group_by && group_by.any?
           statement << " ORDER BY #{order_statement(order_by, qualify)}"   if order_by && order_by.any?
 
@@ -392,7 +395,7 @@ module DataMapper
           if supports_default_values? && properties.empty?
             statement << default_values_clause
           else
-            statement << <<-SQL.compress_lines
+            statement << DataMapper::Ext::String.compress_lines(<<-SQL)
               (#{properties.map { |property| quote_name(property.field) }.join(', ')})
               VALUES
               (#{(['?'] * properties.size).join(', ')})
@@ -436,7 +439,7 @@ module DataMapper
 
           statement = "UPDATE #{quote_name(model.storage_name(name))}"
           statement << " SET #{properties.map { |property| "#{quote_name(property.field)} = ?" }.join(', ')}"
-          statement << " WHERE #{conditions_statement}" unless conditions_statement.blank?
+          statement << " WHERE #{conditions_statement}" unless DataMapper::Ext.blank?(conditions_statement)
 
           return statement, bind_values
         end
@@ -458,7 +461,7 @@ module DataMapper
           end
 
           statement = "DELETE FROM #{quote_name(model.storage_name(name))}"
-          statement << " WHERE #{conditions_statement}" unless conditions_statement.blank?
+          statement << " WHERE #{conditions_statement}" unless DataMapper::Ext.blank?(conditions_statement)
 
           return statement, bind_values
         end
