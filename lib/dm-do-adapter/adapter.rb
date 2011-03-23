@@ -151,7 +151,7 @@ module DataMapper
 
           begin
             while reader.next!
-              records << DataMapper::Ext::Array.to_hash(fields.zip(reader.values))
+              records << Hash[ fields.zip(reader.values) ]
             end
           ensure
             reader.close
