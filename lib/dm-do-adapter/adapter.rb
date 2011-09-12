@@ -132,7 +132,7 @@ module DataMapper
       # @api semipublic
       def read(query)
         fields = query.fields
-        types  = fields.map { |property| property.primitive }
+        types  = fields.map { |property| property.dump_class }
 
         statement, bind_values = select_statement(query)
 
