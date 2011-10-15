@@ -31,7 +31,7 @@ share_examples_for 'A DataObjects Adapter' do
     @log.rewind
     output = @log.read
     output.chomp!
-    output.gsub!(/\A\s+~ \(\d+\.?\d*\)\s+/, '')
+    output.gsub!(/\A\s+~ \(\d+[\.,]?\d*\)\s+/, '')
     output.gsub!(/\Acom\.\w+\.jdbc\.JDBC4PreparedStatement@[^:]+:\s+/, '') if @jruby
     output.split($/)
   end
