@@ -1,6 +1,8 @@
 require 'pathname'
 
-source 'http://rubygems.org'
+source :rubygems
+
+gemspec
 
 SOURCE         = ENV.fetch('SOURCE', :git).to_sym
 REPO_POSTFIX   = SOURCE == :path ? ''                                : '.git'
@@ -19,7 +21,6 @@ gem 'dm-core', DM_VERSION,
 
 group :development do
 
-  gem 'jeweler', '~> 1.6.4'
   gem 'rake',    '~> 0.9.2'
   gem 'rspec',   '~> 1.3.2'
 
