@@ -14,7 +14,7 @@ Gem::Specification.new do |gem|
 
   gem.name          = "dm-do-adapter"
   gem.require_paths = [ "lib" ]
-  gem.version       = DataMapper::Adapters::DataObjectsAdapter::VERSION
+  gem.version       = DataMapper::DoAdapter::VERSION
 
   gem.add_runtime_dependency(%q<data_objects>, ["~> 0.10.6"])
   gem.add_runtime_dependency(%q<dm-core>, ["~> 1.3.0.beta"])
