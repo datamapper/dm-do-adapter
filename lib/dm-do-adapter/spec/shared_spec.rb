@@ -1,6 +1,12 @@
 share_examples_for 'A DataObjects Adapter' do
   before :all do
-    raise '+@adapter+ should be defined in before block' unless instance_variable_get('@adapter')
+    unless respond_to?(:adapter) 
+      raise '+adapter+ should be defined in a let(:adapter) block' 
+    end
+
+    unless respond_to?(:repository) 
+      raise '+repository+ should be defined in a let(:repository) block' 
+    end
 
     @log = StringIO.new
 
@@ -8,7 +14,7 @@ share_examples_for 'A DataObjects Adapter' do
     DataMapper.logger = DataMapper::Logger.new(@log, :debug)
 
     # set up the adapter after switching the logger so queries can be captured
-    @adapter = DataMapper.setup(@adapter.name, @adapter.options)
+    @adapter = DataMapper.setup(adapter.name, adapter.options)
 
     @jruby = !!(RUBY_PLATFORM =~ /java/)
 
@@ -240,7 +246,7 @@ share_examples_for 'A DataObjects Adapter' do
         @article_model.create(:name => 'Test', :description => 'Description').should be_saved
         @article_model.create(:name => 'NoDescription').should be_saved
 
-        @query = DataMapper::Query.new(@repository, @article_model, :conditions => [ 'description IS NOT NULL' ])
+        @query = DataMapper::Query.new(repository, @article_model, :conditions => [ 'description IS NOT NULL' ])
 
         @return = @adapter.read(@query)
       end
@@ -261,7 +267,7 @@ share_examples_for 'A DataObjects Adapter' do
       before :all do
         @article_model.create(:name => 'Test').should be_saved
 
-        @query = DataMapper::Query.new(@repository, @article_model, :conditions => [ 'name IS NOT NULL', nil ])
+        @query = DataMapper::Query.new(repository, @article_model, :conditions => [ 'name IS NOT NULL', nil ])
       end
 
       it 'should raise an error' do
@@ -279,7 +285,7 @@ share_examples_for 'A DataObjects Adapter' do
           end
 
           @parents = @article_model.all
-          @query   = DataMapper::Query.new(@repository, @article_model, :parent => @parents)
+          @query   = DataMapper::Query.new(repository, @article_model, :parent => @parents)
 
           @expected = @article_model.all[1, 4].map { |article| article.attributes(:property) }
         end
@@ -338,7 +344,7 @@ share_examples_for 'A DataObjects Adapter' do
           end
 
           @parents = @article_model.all
-          @query   = DataMapper::Query.new(@repository, @article_model, :parent.not => @parents)
+          @query   = DataMapper::Query.new(repository, @article_model, :parent.not => @parents)
 
           @expected = []
         end
