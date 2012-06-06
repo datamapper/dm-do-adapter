@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "dm-do-adapter"
-  s.version = "1.2.0"
+  s.version = "1.2.1"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Dan Kubb"]
-  s.date = "2011-10-09"
+  s.date = "2012-06-06"
   s.description = "DataObjects Adapter for DataMapper"
   s.email = "dan.kubb@gmail.com"
   s.extra_rdoc_files = [
@@ -32,7 +32,7 @@ Gem::Specification.new do |s|
   s.homepage = "http://github.com/datamapper/dm-do-adapter"
   s.require_paths = ["lib"]
   s.rubyforge_project = "datamapper"
-  s.rubygems_version = "1.8.11"
+  s.rubygems_version = "1.8.24"
   s.summary = "DataObjects Adapter for DataMapper"
 
   if s.respond_to? :specification_version then
