@@ -691,7 +691,20 @@ module DataMapper
               return conditions_statement(comparison.foreign_key_mapping, qualify)
             end
           elsif comparison.slug == :in && empty_comparison?(value)
-            return []  # match everything
+            # An "in" clause with an empty list can be evaluated two ways:
+            #
+            #   * when negated, it means match everything
+            #   * when not negated, it means match nothing
+            #
+            # These semantics can be explained with the following ruby examples:
+            #
+            #   * not [].include?(1)  # => true
+            #   * [].include?(1)      # => false
+            #
+            # In two-valued logic the statement "does the value not match an
+            # empty set" is always true. Conversely the statement "does the
+            # value match an empty set" is always false.
+            return []
           end
 
           operator    = comparison_operator(comparison)
