@@ -690,7 +690,7 @@ module DataMapper
             else
               return conditions_statement(comparison.foreign_key_mapping, qualify)
             end
-          elsif comparison.slug == :in && value.empty?
+          elsif comparison.slug == :in && empty_comparison?(value)
             return []  # match everything
           end
 
@@ -750,6 +750,11 @@ module DataMapper
           "\"#{name[0, self.class::IDENTIFIER_MAX_LENGTH].gsub('"', '""')}\""
         end
 
+      end
+
+      # @api private
+      def empty_comparison?(value)
+        value.respond_to?(:empty?) && value.empty?
       end
 
       include SQL
