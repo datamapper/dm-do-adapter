@@ -690,8 +690,21 @@ module DataMapper
             else
               return conditions_statement(comparison.foreign_key_mapping, qualify)
             end
-          elsif comparison.slug == :in && !value.any?
-            return []  # match everything
+          elsif comparison.slug == :in && empty_comparison?(value)
+            # An "in" clause with an empty list can be evaluated two ways:
+            #
+            #   * when negated, it means match everything
+            #   * when not negated, it means match nothing
+            #
+            # These semantics can be explained with the following ruby examples:
+            #
+            #   * not [].include?(1)  # => true
+            #   * [].include?(1)      # => false
+            #
+            # In two-valued logic the statement "does the value not match an
+            # empty set" is always true. Conversely the statement "does the
+            # value match an empty set" is always false.
+            return []
           end
 
           operator    = comparison_operator(comparison)
@@ -750,6 +763,24 @@ module DataMapper
           "\"#{name[0, self.class::IDENTIFIER_MAX_LENGTH].gsub('"', '""')}\""
         end
 
+      end
+
+      # Test if the value is empty
+      #
+      # If the value contains any object, including "falsy" values like nil or
+      # false, it should still return false since it is not empty.
+      #
+      # Previous code used Enumerable#any? without a block, which returned true
+      # if the Enumerable contained falsy values. This allowed for invalid
+      # queries to be generated and executed.
+      #
+      # @param [Enumerable] value
+      #
+      # @return [Boolean]
+      #
+      # @api private
+      def empty_comparison?(value)
+        not value.any? { true }
       end
 
       include SQL

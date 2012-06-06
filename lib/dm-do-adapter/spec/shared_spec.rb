@@ -396,6 +396,23 @@ share_examples_for 'A DataObjects Adapter' do
         end
       end
 
+      describe 'with an inclusion comparison of falsy values' do
+        before :all do
+          5.times do |index|
+            @article_model.create(:name => "Test #{index}", :parent => @article_model.last).should be_saved
+          end
+
+          @parents = [nil]
+          @query   = DataMapper::Query.new(repository, @article_model, :parent => @parents)
+          @return  = @adapter.read(@query)
+        end
+
+        it 'should return records with matching values' do
+          @return.size.should == 1
+          @return.to_a.first.should == @article_model.first.attributes(:property)
+        end
+      end
+
     end
 
     describe 'with a Query Path' do
