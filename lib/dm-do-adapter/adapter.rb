@@ -752,9 +752,22 @@ module DataMapper
 
       end
 
+      # Test if the value is empty
+      #
+      # If the value contains any object, including "falsy" values like nil or
+      # false, it should still return false since it is not empty.
+      #
+      # Previous code used Enumerable#any? without a block, which returned true
+      # if the Enumerable contained falsy values. This allowed for invalid
+      # queries to be generated and executed.
+      #
+      # @param [Enumerable] value
+      #
+      # @return [Boolean]
+      #
       # @api private
       def empty_comparison?(value)
-        value.respond_to?(:empty?) && value.empty?
+        not value.any? { true }
       end
 
       include SQL
