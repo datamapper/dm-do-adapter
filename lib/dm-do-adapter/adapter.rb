@@ -698,8 +698,8 @@ module DataMapper
             #
             # These semantics can be explained with the following ruby examples:
             #
-            #   * not [].include?(1)  # => true
-            #   * [].include?(1)      # => false
+            #   * ! [].include?(1)  # => true
+            #   * [].include?(1)    # => false
             #
             # In two-valued logic the statement "does the value not match an
             # empty set" is always true. Conversely the statement "does the
@@ -780,7 +780,7 @@ module DataMapper
       #
       # @api private
       def empty_comparison?(value)
-        not value.any? { true }
+        ! value.any? { true }
       end
 
       include SQL
