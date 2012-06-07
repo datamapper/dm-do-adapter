@@ -15,6 +15,8 @@ module DataMapper
       extend Chainable
       extend Deprecate
 
+      SQL_FALSE = '1 = 0'.freeze
+
       deprecate :query, :select
 
       # Retrieve results using an SQL SELECT statement
@@ -592,7 +594,7 @@ module DataMapper
           if conditions.valid?
             conditions_statement(conditions, qualify)
           else
-            [ '1 = 0', [] ]
+            [ SQL_FALSE, [] ]
           end
         end
 
@@ -690,21 +692,42 @@ module DataMapper
             else
               return conditions_statement(comparison.foreign_key_mapping, qualify)
             end
-          elsif comparison.slug == :in && empty_comparison?(value)
-            # An "in" clause with an empty list can be evaluated two ways:
-            #
-            #   * when negated, it means match everything
-            #   * when not negated, it means match nothing
-            #
-            # These semantics can be explained with the following ruby examples:
-            #
-            #   * ! [].include?(1)  # => true
-            #   * [].include?(1)    # => false
-            #
-            # In two-valued logic the statement "does the value not match an
-            # empty set" is always true. Conversely the statement "does the
-            # value match an empty set" is always false.
-            return []
+          elsif comparison.slug == :in
+            nil_values, other_values = value.partition { |entry| entry.nil? }
+
+            if nil_values.empty? and other_values.empty?
+              # The "in" clause is an empty list. This can be evaluated two
+              # ways:
+              #
+              #   * when not negated, it means: match nothing
+              #   * when negated, it means: match everything
+              #
+              # These semantics can be explained with the following ruby examples:
+              #
+              #   * [].include?(any_value)    # => false
+              #   * ! [].include?(any_value)  # => true
+              #
+              # In two-valued logic the statement "does the value match an
+              # empty set" is always false. Conversely the statement "does the
+              # value not match an empty set" is always true.
+              #
+              # This returns an SQL statement that is always false, and it may
+              # be negated by an outer negation operator in the case where we
+              # are looking for "a value not in an empty set".
+              return SQL_FALSE, []
+            elsif nil_values.empty?
+              # the "in" clause contains non-nil values, so the normal code path
+              # can handle this condition.
+            else
+              # the "in" clause contains a nil value, so create a query that
+              # handles mixed nil and non-nil values.
+              disjunction = Query::Conditions::Operation.new(:or,
+                Query::Conditions::Comparison.new(:in,  subject, other_values),
+                Query::Conditions::Comparison.new(:eql, subject, nil)
+              )
+
+              return conditions_statement(disjunction, qualify)
+            end
           end
 
           operator    = comparison_operator(comparison)
@@ -763,24 +786,6 @@ module DataMapper
           "\"#{name[0, self.class::IDENTIFIER_MAX_LENGTH].gsub('"', '""')}\""
         end
 
-      end
-
-      # Test if the value is empty
-      #
-      # If the value contains any object, including "falsy" values like nil or
-      # false, it should still return false since it is not empty.
-      #
-      # Previous code used Enumerable#any? without a block, which returned true
-      # if the Enumerable contained falsy values. This allowed for invalid
-      # queries to be generated and executed.
-      #
-      # @param [Enumerable] value
-      #
-      # @return [Boolean]
-      #
-      # @api private
-      def empty_comparison?(value)
-        ! value.any? { true }
       end
 
       include SQL
