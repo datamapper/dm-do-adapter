@@ -390,23 +390,36 @@ share_examples_for 'A DataObjects Adapter' do
         end
       end
 
-      describe 'with an inclusion comparison of falsy values' do
+      context 'with an inclusion comparison of nil values' do
         before :all do
           5.times do |index|
             @article_model.create(:name => "Test #{index}", :parent => @article_model.last).should be_saved
           end
 
-          @parents = [nil]
-          @query   = DataMapper::Query.new(repository, @article_model, :parent => @parents)
-          @return  = @adapter.read(@query)
+          @query  = DataMapper::Query.new(repository, @article_model, :parent_name => [nil])
+          @return = @adapter.read(@query)
         end
 
         it 'should return records with matching values' do
-          @return.size.should == 1
-          @return.to_a.first.should == @article_model.first.attributes(:property)
+          @return.to_a.should == [ @article_model.first.attributes(:property) ]
         end
       end
 
+      context 'with an inclusion comparison of nil and actual values' do
+        before :all do
+          5.times do |index|
+            @article_model.create(:name => "Test #{index}", :parent => @article_model.last).should be_saved
+          end
+
+          @last   = @article_model.last
+          @query  = DataMapper::Query.new(repository, @article_model, :parent_name => [nil, @last.parent.name])
+          @return = @adapter.read(@query)
+        end
+
+        it 'should return records with matching values' do
+          @return.to_a.should =~ [ @article_model.first.attributes(:property), @last.attributes(:property) ]
+        end
+      end
     end
 
     describe 'with a Query Path' do
