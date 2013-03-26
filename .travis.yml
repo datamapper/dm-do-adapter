@@ -2,15 +2,6 @@ bundler_args: --without yard guard metrics benchmarks
 branches:
   only:
     - /^release-.*$/
-services:
-  - sqlite3
-  - mysql
-  - postgresql
-before_script:
-  - mysql -e "create database datamapper_alternate_tests;"
-  - mysql -e "create database datamapper_default_tests;"
-  - psql  -c "create database datamapper_default_tests;" -U postgres
-  - psql  -c "create database datamapper_alternate_tests;" -U postgres
 script: "bundle exec rake spec"
 rvm:
   - ree
@@ -25,12 +16,6 @@ rvm:
   - ree
   - rbx-18mode
   - rbx-19mode
-env:
-  - "GIT_BRANCH=release-1.2 ADAPTER=in_memory"
-  - "GIT_BRANCH=release-1.2 ADAPTER=yaml"
-  - "GIT_BRANCH=release-1.2 ADAPTER=sqlite"
-  - "GIT_BRANCH=release-1.2 ADAPTER=mysql DM_DB_USER=root DM_DB_PASSWORD=''"
-  - "GIT_BRANCH=release-1.2 ADAPTER=postgres DM_DB_USER=postgres DM_DB_PASSWORD=''"
 notifications:
   irc: "irc.freenode.org#datamapper"
   email:
@@ -38,8 +23,4 @@ notifications:
 matrix:
   allow_failures:
     - rvm: rbx-18mode
-      env: "GIT_BRANCH=release-1.2 ADAPTER=in_memory"
     - rvm: rbx-19mode
-      env: "GIT_BRANCH=release-1.2 ADAPTER=in_memory"
-    - rvm: rbx-19mode
-      env: "GIT_BRANCH=release-1.2 ADAPTER=yaml"
